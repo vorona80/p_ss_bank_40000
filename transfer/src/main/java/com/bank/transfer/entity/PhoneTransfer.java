@@ -3,6 +3,7 @@ package com.bank.transfer.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 
 @Entity
 @Data
@@ -14,7 +15,7 @@ public class PhoneTransfer {
     private Long id;
 
     @Column(name = "phone_number")
-//    @Pattern(regexp = "/^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$/")
+    @Pattern(regexp = "/^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$/")
     private Long phone;
 
     @Column(name = "amount")

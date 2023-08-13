@@ -3,7 +3,7 @@ package com.bank.transfer.controller;
 import com.bank.transfer.dto.CardTransferDto;
 import com.bank.transfer.exception.NoSuchTransferException;
 import com.bank.transfer.modelMapper.ModelMapperCard;
-import com.bank.transfer.service.CardTransferServiceImpl;
+import com.bank.transfer.service.CardTransferService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,18 +19,18 @@ import java.util.stream.Collectors;
 @RequestMapping("/card")
 @Tag(name = "Транзакции по номеру БАНКОВСКОЙ КАРТЫ", description = "Методы для работы с транзакциями")
 public class RestControllerCardTransfer {
-    private final CardTransferServiceImpl cardTransferServiceImpl;
+    private final CardTransferService cardTransferService;
     private final ModelMapperCard modelMapperCard;
     @Autowired
-    public RestControllerCardTransfer(CardTransferServiceImpl cardTransferServiceImpl, ModelMapperCard modelMapperCard) {
-        this.cardTransferServiceImpl = cardTransferServiceImpl;
+    public RestControllerCardTransfer(CardTransferService cardTransferService, ModelMapperCard modelMapperCard) {
+        this.cardTransferService = cardTransferService;
         this.modelMapperCard = modelMapperCard;
     }
 
-    @GetMapping("")
+    @GetMapping
     @Operation(summary = "Получение всех транзакций")
     public ResponseEntity<List<CardTransferDto>> getAllCardTransfers () {
-        List<CardTransferDto> cardTransfersDto = cardTransferServiceImpl.getAllCardTransfers()
+        List<CardTransferDto> cardTransfersDto = cardTransferService.getAllCardTransfers()
                 .stream()
                 .map(modelMapperCard::convertToCardTransferDto)
                 .collect(Collectors.toList());
@@ -43,14 +43,14 @@ public class RestControllerCardTransfer {
     @Operation(summary = "Получение транзакции по id")
     public ResponseEntity<CardTransferDto> getCardTransferById (@PathVariable ("id") Long id) {
         return new ResponseEntity<>(modelMapperCard.
-                convertToCardTransferDto(cardTransferServiceImpl.getCardTransfer(id)), HttpStatus.OK);
+                convertToCardTransferDto(cardTransferService.getCardTransfer(id)), HttpStatus.OK);
     }
 
-    @PostMapping("")
+    @PostMapping
     @Operation(summary = "Создание новой транзакции")
     public ResponseEntity<HttpStatus> addNewCardTransfer (
             @Valid @RequestBody CardTransferDto cardTransferDto) {
-        cardTransferServiceImpl.createCardTransfer(modelMapperCard
+        cardTransferService.createCardTransfer(modelMapperCard
                 .convertToCardTransfer(cardTransferDto));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -61,7 +61,7 @@ public class RestControllerCardTransfer {
             @Valid @RequestBody CardTransferDto updateCardTransferDto,
             @PathVariable("id") Long id) {
         if (updateCardTransferDto.getId().equals(id)) {
-            cardTransferServiceImpl.update(modelMapperCard
+            cardTransferService.update(modelMapperCard
                     .convertToCardTransfer(updateCardTransferDto));
             return ResponseEntity.status(HttpStatus.OK).build();
         }
@@ -71,10 +71,10 @@ public class RestControllerCardTransfer {
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаленрие транзакции")
     public String deleteCardTransfer(@PathVariable("id") Long id) {
-        if(cardTransferServiceImpl.getCardTransfer(id) == null) {
+        if(cardTransferService.getCardTransfer(id) == null) {
             return "Транзакции по номеру карты с ID = " + id + " нет в базе данных";
         }
-        cardTransferServiceImpl.delete(id);
+        cardTransferService.delete(id);
         return "Транзакция по номеру карты с ID = " + id + " была удалена";
     }
 }

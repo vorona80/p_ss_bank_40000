@@ -3,7 +3,7 @@ package com.bank.transfer.controller;
 import com.bank.transfer.dto.AccountTransferDto;
 import com.bank.transfer.exception.NoSuchTransferException;
 import com.bank.transfer.modelMapper.ModelMapperAccount;
-import com.bank.transfer.service.AccountTransferServiceImpl;
+import com.bank.transfer.service.AccountTransferService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,19 +19,19 @@ import java.util.stream.Collectors;
 @RequestMapping("/account")
 @Tag(name = "Транзакции по номеру АККАУНТА", description = "Методы для работы с транзакциями")
 public class RestControllerAccountTransfer {
-    private final AccountTransferServiceImpl accountTransferServiceImpl;
+    private final AccountTransferService accountTransferService;
     private final ModelMapperAccount modelMapperAccount;
     @Autowired
-    public RestControllerAccountTransfer(AccountTransferServiceImpl accountTransferServiceImpl,
+    public RestControllerAccountTransfer(AccountTransferService accountTransferService,
                                          ModelMapperAccount modelMapperAccount) {
-        this.accountTransferServiceImpl = accountTransferServiceImpl;
+        this.accountTransferService = accountTransferService;
         this.modelMapperAccount = modelMapperAccount;
     }
 
-    @GetMapping("")
+    @GetMapping
     @Operation(summary = "Получение всех транзакций")
     public ResponseEntity<List<AccountTransferDto>> getAllAccountTransfers() {
-        List<AccountTransferDto> accountTransfersDto = accountTransferServiceImpl.getAllAccountTransfers()
+        List<AccountTransferDto> accountTransfersDto = accountTransferService.getAllAccountTransfers()
                 .stream()
                 .map(modelMapperAccount::convertToAccountTransferDto)
                 .collect(Collectors.toList());
@@ -43,13 +43,13 @@ public class RestControllerAccountTransfer {
     @Operation(summary = "Получение тразакции по регистрационному номеру")
     public ResponseEntity<AccountTransferDto>getAccountTransferById(@PathVariable("id") Long id) {
         AccountTransferDto accountTransferDto = modelMapperAccount
-                .convertToAccountTransferDto(accountTransferServiceImpl.getAccountTransfer(id));
+                .convertToAccountTransferDto(accountTransferService.getAccountTransfer(id));
         return new ResponseEntity<>(accountTransferDto, HttpStatus.OK);
     }
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<HttpStatus> addNewAccountTransfer(
             @RequestBody @Valid AccountTransferDto accountTransferDto) {
-        accountTransferServiceImpl.createAccountTransfer(modelMapperAccount
+        accountTransferService.createAccountTransfer(modelMapperAccount
                 .convertToAccountTransfer(accountTransferDto));
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
@@ -59,7 +59,7 @@ public class RestControllerAccountTransfer {
             @RequestBody @Valid AccountTransferDto updateAccountTransferDto,
             @PathVariable("id") Long id) {
         if(updateAccountTransferDto.getId().equals(id)) {
-            accountTransferServiceImpl.update(modelMapperAccount
+            accountTransferService.update(modelMapperAccount
                     .convertToAccountTransfer(updateAccountTransferDto));
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -69,10 +69,10 @@ public class RestControllerAccountTransfer {
     @DeleteMapping("/{id}")
     @Operation(summary = "Удаление транзакции по регистрационному номеру из базы данных")
     public String deleteAccountTransfer(@PathVariable("id") Long id) {
-        if (accountTransferServiceImpl.getAccountTransfer(id) == null) {
+        if (accountTransferService.getAccountTransfer(id) == null) {
             return "Транзакции по номеру аккаунта с ID = " + id + " нет в базе данных";
         }
-        accountTransferServiceImpl.delete(id);
+        accountTransferService.delete(id);
         return "Транзакция по номеру аккаунта с ID = " + id + " была удалена";
     }
 

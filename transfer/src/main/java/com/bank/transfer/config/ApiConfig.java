@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "Public Info Rest API"
+                title = "Transfer Rest API"
         )
 )
 

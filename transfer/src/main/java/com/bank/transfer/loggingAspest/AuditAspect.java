@@ -85,25 +85,3 @@ public class AuditAspect {
 
 
 
-
-
-//        Long id;
-//    if (entity.replace("TransferServiceImpl", "").equals("Account")) {
-//        id = accountTransferServiceImpl.getAllAccountTransfers().stream()
-//                .mapToLong(a -> a.getId())
-//                .max()
-//                .orElse(Long.MIN_VALUE);
-//        audit.setEntityJson(accountTransferServiceImpl.getAccountTransfer(id).toString());
-//    } if (entity.replace("TransferServiceImpl", "").equals("Card")) {
-//            id = cardTransferServiceImpl.getAllCardTransfers().stream()
-//                    .mapToLong(a -> a.getId())
-//                    .max()
-//                    .orElse(Long.MIN_VALUE);
-//            audit.setEntityJson(cardTransferServiceImpl.getCardTransfer(id).toString());
-//        } if (entity.replace("TransferServiceImpl", "").equals("Phone")) {
-//            id = phoneTransferServiceImpl.getAllPhoneTransfers().stream()
-//                    .mapToLong(a -> a.getId())
-//                    .max()
-//                    .orElse(Long.MIN_VALUE);
-//            audit.setEntityJson(phoneTransferServiceImpl.getPhoneTransfer(id).toString());
-//        }

@@ -1,7 +1,7 @@
 package com.bank.transfer.controller;
 
 import com.bank.transfer.entity.TransferAudit;
-import com.bank.transfer.service.TransferAuditServiceImpl;
+import com.bank.transfer.service.TransferAuditService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +15,16 @@ import java.util.List;
 @RequestMapping("/audit")
 @Tag(name = "Таблица АУДИТА", description = "Методы для работы с аудитом")
 public class RestControllerTransferAudit {
-    private final TransferAuditServiceImpl transferAuditServiceImpl;
+    private final TransferAuditService transferAuditService;
     @Autowired
-    public RestControllerTransferAudit(TransferAuditServiceImpl transferAuditServiceImpl) {
-        this.transferAuditServiceImpl = transferAuditServiceImpl;
+    public RestControllerTransferAudit(TransferAuditService transferAuditService) {
+
+        this.transferAuditService = transferAuditService;
     }
 
-    @GetMapping("/audit")
+    @GetMapping
     @Operation(summary = "Получение всей таблици аудита")
     public List<TransferAudit> getAllTransferAudit() {
-        return transferAuditServiceImpl.getAllAudit();
+        return transferAuditService.getAllAudit();
     }
 }
