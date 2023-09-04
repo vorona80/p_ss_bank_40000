@@ -1,12 +1,10 @@
 package com.bank.transfer.loggingAspest;
-
 import com.bank.transfer.entity.TransferAudit;
 import com.bank.transfer.repository.TransferAuditRepository;
 import com.bank.transfer.service.TransferAuditServiceImpl;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,14 +27,7 @@ public class AuditAspect {
         this.transferAuditServiceImpl = transferAuditServiceImpl;
 
     }
-    @Pointcut("execution(* com.bank.transfer.service.*.update(..))")
-    public void methodUpdate() {
-    }
-    @Pointcut("execution(* com.bank.transfer.service.*.create*(..))")
-    public void methodCreate() {
-    }
-
-    @Around("methodUpdate() && args(updatedJson)")
+    @Around("execution(* com.bank.transfer.service.*.update(..)) && args(updatedJson)")
     public Object auditUpdated(ProceedingJoinPoint proceedingJoinPoint,
                                Object updatedJson) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();
@@ -63,7 +54,7 @@ public class AuditAspect {
     }
 
 
-    @Around("methodCreate() && args(createJson)")
+    @Around("execution(* com.bank.transfer.service.*.create*(..)) && args(createJson)")
     public Object methodCreate(ProceedingJoinPoint proceedingJoinPoint,
                                Object createJson) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) proceedingJoinPoint.getSignature();

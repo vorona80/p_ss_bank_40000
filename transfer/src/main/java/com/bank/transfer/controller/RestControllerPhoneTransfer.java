@@ -53,7 +53,7 @@ public class RestControllerPhoneTransfer {
             @Valid @RequestBody PhoneTransferDto phoneTransferDto) {
         phoneTransferService.createPhoneTransfer(modelMapperPhone
                 .convertToPhone(phoneTransferDto));
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PutMapping("/{id}")

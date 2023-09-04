@@ -51,7 +51,7 @@ public class RestControllerAccountTransfer {
             @RequestBody @Valid AccountTransferDto accountTransferDto) {
         accountTransferService.createAccountTransfer(modelMapperAccount
                 .convertToAccountTransfer(accountTransferDto));
-        return ResponseEntity.ok(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
